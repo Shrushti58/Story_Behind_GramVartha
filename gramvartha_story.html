@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gramvartha — Why I Built It</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green-dark: #085041;
+    --green-mid: #0F6E56;
+    --green-light: #1D9E75;
+    --green-pale: #E1F5EE;
+    --amber: #EF9F27;
+    --amber-dark: #BA7517;
+    --red: #E24B4A;
+    --blue: #185FA5;
+    --blue-pale: #E6F1FB;
+    --ink: #1a1a18;
+    --ink-mid: #000000;
+    --ink-light: #000000;
+    --ink-faint: #000000;
+    --bg: #FDFCF8;
+    --bg2: #F4F2EC;
+    --bg3: #ECEAE3;
+    --border: rgba(68,68,65,0.12);
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink-mid);
+    font-size: 17px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--green-dark);
+    color: #fff;
+    padding: 72px 24px 64px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(29,158,117,0.25) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 30%, rgba(239,159,39,0.1) 0%, transparent 50%);
+  }
+  .hero-inner { position: relative; max-width: 760px; margin: 0 auto; }
+  .hero-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: #9FE1CB;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.12;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: italic; color: #9FE1CB; }
+  .hero-sub {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.72);
+    font-style: italic;
+    max-width: 540px;
+    margin: 0 auto 28px;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 100px;
+    padding: 8px 20px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    font-family: 'JetBrains Mono', monospace;
+    margin: 0 4px 8px;
+  }
+  .badge-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .badge-dot.green { background: #1D9E75; }
+  .badge-dot.amber { background: #EF9F27; }
+  .badge-dot.blue  { background: #378ADD; }
+
+  /* LAYOUT */
+  .container { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+  .section { padding: 60px 0 0; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* TYPOGRAPHY */
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 20px;
+  }
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  p { margin-bottom: 18px; font-weight: 300; }
+  p b { font-weight: 400; color: var(--ink); }
+  p i { font-style: italic; color: var(--ink-light); }
+  .pull-quote {
+    border-left: 3px solid var(--green-light);
+    padding: 4px 0 4px 22px;
+    margin: 32px 0;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  /* ILLUSTRATIONS */
+  .illus-wrap {
+    margin: 32px 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+  }
+  .illus-wrap svg { display: block; width: 100%; }
+  .illus-caption {
+    text-align: center;
+    font-size: 12px;
+    font-style: italic;
+    color: var(--ink-faint);
+    padding: 10px 16px 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* WHATSAPP CHAOS */
+  .wa-scene {
+    background: #ECE5DD;
+    border-radius: 14px;
+    padding: 20px 16px;
+    margin: 28px 0;
+    border: 1px solid var(--border);
+  }
+  .wa-header {
+    background: #075E54;
+    border-radius: 10px 10px 0 0;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    margin: -20px -16px 16px;
+  }
+  .wa-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #128C7E;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 600; color: #fff;
+    font-family: sans-serif;
+  }
+  .wa-header-text { flex: 1; }
+  .wa-header-name { font-size: 14px; font-weight: 600; color: #fff; font-family: sans-serif; line-height: 1.2; }
+  .wa-header-sub { font-size: 11px; color: #B2DFDB; font-family: sans-serif; }
+  .wa-msg {
+    display: flex;
+    margin-bottom: 6px;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .wa-msg.right { flex-direction: row-reverse; }
+  .wa-bubble {
+    max-width: 78%;
+    background: #fff;
+    border-radius: 0 10px 10px 10px;
+    padding: 8px 12px 6px;
+    font-family: sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #1a1a18;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    position: relative;
+  }
+  .wa-msg.right .wa-bubble {
+    background: #DCF8C6;
+    border-radius: 10px 0 10px 10px;
+  }
+  .wa-sender { font-size: 11px; font-weight: 600; color: #075E54; margin-bottom: 2px; }
+  .wa-time { font-size: 10px; color: #999; text-align: right; margin-top: 2px; }
+  .wa-notice-tag {
+    background: #E8F5E9; border-left: 3px solid #128C7E;
+    border-radius: 4px; padding: 4px 8px; margin-bottom: 4px;
+    font-size: 11px; color: #075E54;
+  }
+  .wa-buried {
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 12px;
+    color: #A32D2D;
+    font-weight: 600;
+    margin-top: 12px;
+    padding: 8px;
+    background: rgba(226,75,74,0.08);
+    border-radius: 6px;
+  }
+
+  /* PROBLEMS */
+  .problem-list { margin: 24px 0; }
+  .problem-item {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 16px;
+    align-items: start;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+  }
+  .problem-item:last-child { border-bottom: 1px solid var(--border); }
+  .problem-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--bg3);
+    line-height: 1;
+  }
+  .problem-title { font-size: 1rem; font-weight: 400; color: var(--ink); margin-bottom: 6px; }
+  .problem-body { font-size: .92rem; font-weight: 300; line-height: 1.65; }
+  .problem-body em { color: var(--ink-light); font-style: italic; }
+
+  /* BIG QUESTION */
+  .big-q {
+    background: var(--green-dark);
+    color: #fff;
+    border-radius: 16px;
+    padding: 40px 36px;
+    margin: 40px 0;
+    text-align: center;
+  }
+  .big-q p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    line-height: 1.6;
+    color: #fff;
+    margin: 0;
+    font-weight: 400;
+  }
+  .big-q em { color: #9FE1CB; font-style: normal; }
+
+  /* FEATURES */
+  .feat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin: 24px 0;
+  }
+  .feat-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    background: var(--bg);
+  }
+  .feat-who {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .feat-title { font-size: .97rem; font-weight: 400; color: var(--ink); margin-bottom: 6px; }
+  .feat-body { font-size: .88rem; font-weight: 300; line-height: 1.6; color: var(--ink-light); }
+
+  /* TECH STACK */
+  .stack-pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px; }
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--ink-mid);
+    background: var(--bg2);
+  }
+  .pill.green { background: var(--green-pale); color: var(--green-dark); border-color: rgba(15,110,86,0.2); }
+  .pill.amber { background: #FAEEDA; color: var(--amber-dark); border-color: rgba(186,117,23,0.2); }
+  .pill.blue  { background: var(--blue-pale); color: var(--blue); border-color: rgba(24,95,165,0.2); }
+
+  /* FINALE */
+  .finale {
+    text-align: center;
+    padding: 60px 0 80px;
+  }
+  .finale-tagline {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .finale-dev {
+    font-size: 1.1rem;
+    color: var(--green-mid);
+    letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+  .finale-note {
+    font-size: .85rem;
+    font-style: italic;
+    color: var(--ink-faint);
+    max-width: 480px;
+    margin: 16px auto 0;
+    line-height: 1.6;
+  }
+
+  /* DIVIDER */
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0 0; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 52px 20px 44px; }
+    .container { padding: 0 16px; }
+    .big-q { padding: 28px 20px; }
+    .problem-item { grid-template-columns: 40px 1fr; }
+    .problem-num { font-size: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <span class="hero-kicker">Origin Story · 2024</span>
+    <h1>I Built <em>Gramvartha</em><br>Because WhatsApp Failed<br>Our Village</h1>
+    <p class="hero-sub">A full-stack platform to digitize Gram Panchayat governance — born from a free eye-checkup camp that nobody attended.</p>
+    <div>
+      <span class="badge"><span class="badge-dot green"></span>Mobile-First PWA</span>
+      <span class="badge"><span class="badge-dot amber"></span>4-Role Governance</span>
+      <span class="badge"><span class="badge-dot blue"></span>QR Village Access</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: THE VILLAGE -->
+  <div class="section">
+    <div class="section-label">Chapter 01 — Where it started</div>
+    <h2>Every Village Has a WhatsApp Group</h2>
+
+    <!-- Illustration 1: Village Scene -->
+    <div class="illus-wrap">
+      <svg viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg">
+        <!-- Sky -->
+        <rect width="760" height="240" fill="#EAF3DE"/>
+        <!-- Gradient sky overlay -->
+        <rect width="760" height="120" fill="#C0DD97" opacity=".2"/>
+        <!-- Sun -->
+        <circle cx="660" cy="48" r="26" fill="#FAC775" opacity=".75"/>
+        <circle cx="660" cy="48" r="17" fill="#EF9F27" opacity=".85"/>
+        <!-- Clouds -->
+        <ellipse cx="120" cy="42" rx="44" ry="16" fill="#fff" opacity=".65"/>
+        <ellipse cx="156" cy="34" rx="28" ry="14" fill="#fff" opacity=".55"/>
+        <ellipse cx="92"  cy="48" rx="20" ry="12" fill="#fff" opacity=".5"/>
+        <ellipse cx="450" cy="35" rx="34" ry="13" fill="#fff" opacity=".5"/>
+        <ellipse cx="480" cy="28" rx="22" ry="11" fill="#fff" opacity=".45"/>
+        <!-- Ground -->
+        <rect x="0" y="172" width="760" height="68" fill="#97C459" opacity=".35"/>
+        <rect x="0" y="188" width="760" height="52" fill="#639922" opacity=".18"/>
+        <!-- Road -->
+        <rect x="290" y="172" width="180" height="68" fill="#D3D1C7" opacity=".7"/>
+        <rect x="375" y="178" width="10" height="16" rx="2" fill="#fff" opacity=".55"/>
+        <rect x="375" y="202" width="10" height="16" rx="2" fill="#fff" opacity=".55"/>
+        <!-- === PANCHAYAT BUILDING (center) === -->
+        <rect x="296" y="84" width="168" height="92" rx="3" fill="#FAC775" opacity=".88"/>
+        <!-- Roof -->
+        <rect x="284" y="66" width="192" height="26" rx="3" fill="#EF9F27" opacity=".65"/>
+        <!-- Columns -->
+        <rect x="310" y="130" width="12" height="46" rx="2" fill="#BA7517" opacity=".3"/>
+        <rect x="438" y="130" width="12" height="46" rx="2" fill="#BA7517" opacity=".3"/>
+        <!-- Sign board -->
+        <rect x="310" y="92" width="140" height="32" rx="4" fill="#fff" opacity=".95"/>
+        <rect x="315" y="97" width="130" height="22" rx="3" fill="#E6F1FB" opacity=".9"/>
+        <text x="380" y="110" text-anchor="middle" font-size="8.5" font-family="'Arial',sans-serif" fill="#0C447C" font-weight="700">GRAM PANCHAYAT</text>
+        <text x="380" y="121" text-anchor="middle" font-size="7" font-family="'Arial',sans-serif" fill="#185FA5">Rethare, Karad</text>
+        <!-- Door -->
+        <rect x="356" y="134" width="48" height="42" rx="4" fill="#BA7517" opacity=".65"/>
+        <circle cx="398" cy="157" r="3" fill="#EF9F27"/>
+        <!-- Windows -->
+        <rect x="310" y="108" width="28" height="20" rx="3" fill="#B5D4F4" opacity=".85"/>
+        <rect x="422" y="108" width="28" height="20" rx="3" fill="#B5D4F4" opacity=".85"/>
+        <!-- Notice board on wall -->
+        <rect x="314" y="132" width="30" height="24" rx="2" fill="#F1EFE8" opacity=".95" stroke="#D3D1C7" stroke-width=".5"/>
+        <rect x="317" y="135" width="24" height="4" rx="1" fill="#9FE1CB" opacity=".85"/>
+        <rect x="317" y="141" width="18" height="2.5" rx="1" fill="#D3D1C7" opacity=".8"/>
+        <rect x="317" y="145" width="21" height="2.5" rx="1" fill="#D3D1C7" opacity=".8"/>
+        <rect x="317" y="149" width="15" height="2.5" rx="1" fill="#D3D1C7" opacity=".7"/>
+        <!-- HOUSE LEFT -->
+        <rect x="90" y="118" width="120" height="58" rx="3" fill="#FAEEDA" opacity=".88"/>
+        <polygon points="90,118 150,78 210,118" fill="#D85A30" opacity=".5"/>
+        <rect x="122" y="142" width="30" height="34" rx="3" fill="#BA7517" opacity=".55"/>
+        <rect x="96" y="128" width="22" height="16" rx="3" fill="#B5D4F4" opacity=".8"/>
+        <rect x="182" y="128" width="22" height="16" rx="3" fill="#B5D4F4" opacity=".8"/>
+        <!-- HOUSE RIGHT -->
+        <rect x="548" y="122" width="118" height="54" rx="3" fill="#FAEEDA" opacity=".85"/>
+        <polygon points="548,122 607,82 666,122" fill="#D85A30" opacity=".45"/>
+        <rect x="578" y="144" width="28" height="32" rx="3" fill="#BA7517" opacity=".55"/>
+        <rect x="554" y="132" width="20" height="14" rx="3" fill="#B5D4F4" opacity=".78"/>
+        <rect x="632" y="132" width="20" height="14" rx="3" fill="#B5D4F4" opacity=".78"/>
+        <!-- TREE LEFT -->
+        <rect x="52" y="148" width="9" height="34" rx="2" fill="#639922" opacity=".7"/>
+        <ellipse cx="56" cy="134" rx="24" ry="26" fill="#3B6D11" opacity=".5"/>
+        <ellipse cx="46" cy="142" rx="16" ry="18" fill="#639922" opacity=".45"/>
+        <!-- TREE RIGHT -->
+        <rect x="700" y="152" width="9" height="30" rx="2" fill="#639922" opacity=".7"/>
+        <ellipse cx="704" cy="138" rx="22" ry="24" fill="#3B6D11" opacity=".48"/>
+        <!-- PEOPLE near panchayat -->
+        <ellipse cx="258" cy="166" rx="9" ry="9" fill="#BA7517" opacity=".55"/>
+        <rect x="252" y="175" width="12" height="22" rx="3" fill="#854F0B" opacity=".45"/>
+        <ellipse cx="278" cy="168" rx="8" ry="8" fill="#444441" opacity=".45"/>
+        <rect x="272" y="176" width="12" height="20" rx="3" fill="#5F5E5A" opacity=".4"/>
+        <!-- Person with phone -->
+        <ellipse cx="494" cy="164" rx="9" ry="9" fill="#444441" opacity=".5"/>
+        <rect x="488" y="173" width="12" height="24" rx="3" fill="#5F5E5A" opacity=".45"/>
+        <rect x="493" y="168" width="18" height="26" rx="3" fill="#2C2C2A" opacity=".7"/>
+        <rect x="495" y="170" width="14" height="22" rx="2" fill="#1D9E75" opacity=".75"/>
+        <text x="502" y="183" text-anchor="middle" font-size="6" fill="#fff" font-family="sans-serif" font-weight="600">WA</text>
+        <!-- WhatsApp bubble -->
+        <rect x="512" y="152" width="80" height="22" rx="6" fill="#DCF8C6" stroke="#B2DFDB" stroke-width=".5"/>
+        <text x="520" y="161" font-size="6.5" fill="#1a1a18" font-family="sans-serif">Good morning 🌺🌺</text>
+        <text x="520" y="170" font-size="5.5" fill="#888" font-family="sans-serif">Sanjay Patil · 6:03 AM</text>
+        <line x1="512" y1="163" x2="502" y2="163" stroke="#B2DFDB" stroke-width=".5" stroke-dasharray="2 2"/>
+      </svg>
+      <div class="illus-caption">Rethare village — where every Gram Panchayat notice had to fight for attention in a 250-member WhatsApp group</div>
+    </div>
+
+    <div class="pull-quote">"Before there was an app, there was a group chat. And before the group chat fell apart — there was hope."</div>
+
+    <p>Our village's group was called <b>"Gram Panchayat Rethare 🇮🇳"</b>. 250 members. One admin. Zero structure. At first, it felt like digital progress. Officials could broadcast notices. Citizens could ask questions. The Gram Sevak didn't have to paste paper notices on the wall at 5 AM.</p>
+    <p><i>We thought we had solved something.</i></p>
+  </div>
+
+  <!-- SECTION 2: THE CHAOS -->
+  <div class="section">
+    <div class="section-label">Chapter 02 — The day it broke</div>
+    <h2>A Free Eye Camp. Zero Attendees.</h2>
+    <p>It was a Tuesday. A notice went out at 9:43 AM — Free eye-checkup camp, all villagers welcome, 12th March, 10AM at Panchayat Hall. By the time anyone who mattered saw it, here's what had happened in the group:</p>
+
+    <!-- WhatsApp chaos mockup -->
+    <div class="wa-scene">
+      <div class="wa-header">
+        <div class="wa-avatar">GP</div>
+        <div class="wa-header-text">
+          <div class="wa-header-name">Gram Panchayat Rethare 🇮🇳</div>
+          <div class="wa-header-sub">250 members · Tap for info</div>
+        </div>
+        <svg width="20" height="20" fill="none" stroke="#fff" stroke-width="1.5" opacity=".7"><circle cx="10" cy="5" r="1.5" fill="#fff"/><circle cx="10" cy="10" r="1.5" fill="#fff"/><circle cx="10" cy="15" r="1.5" fill="#fff"/></svg>
+      </div>
+
+      <div class="wa-msg">
+        <div class="wa-bubble">
+          <div class="wa-sender">📢 Gram Sevak Ramesh</div>
+          <div class="wa-notice-tag">Official Notice</div>
+          Free Eye Checkup Camp — 12th March<br>10AM · Panchayat Hall<br>All residents welcome. Please share! 🙏
+          <div class="wa-time">9:43 AM ✓✓</div>
+        </div>
+      </div>
+
+      <div class="wa-msg right">
+        <div class="wa-bubble">
+          <div class="wa-sender" style="color:#e67e22;">Sanjay Patil</div>
+          Good morning everyone 🌺🌺🌺 Have a wonderful day 😊
+          <div class="wa-time">9:51 AM ✓✓</div>
+        </div>
+      </div>
+
+      <div class="wa-msg">
+        <div class="wa-bubble">
+          <div class="wa-sender">Rekha Mane</div>
+          Bhai road fix kab hoga?? 3 mahine se bol raha hoon kuch nahi hota 😤
+          <div class="wa-time">10:04 AM ✓</div>
+        </div>
+      </div>
+
+      <div class="wa-msg right">
+        <div class="wa-bubble">
+          <div class="wa-sender" style="color:#e67e22;">Unknown Member</div>
+          🎵 Voice message · 0:47
+          <div style="background:#ddd;height:3px;border-radius:2px;margin:4px 0;width:80px;"></div>
+          <div class="wa-time">10:12 AM ✓</div>
+        </div>
+      </div>
+
+      <div class="wa-msg">
+        <div class="wa-bubble">
+          <div class="wa-sender">↩ Forwarded many times</div>
+          <div style="font-size:11px;color:#A32D2D;font-weight:600;">⚠️ ONION PRICES FALL 40%!!</div>
+          FARMERS IN CRISIS 😭 Please share this message to every group you are in! 🙏🙏
+          <div class="wa-time">10:28 AM ✓✓</div>
+        </div>
+      </div>
+
+      <div class="wa-msg right">
+        <div class="wa-bubble">
+          <div class="wa-sender" style="color:#e67e22;">Sanjay Patil</div>
+          Good night everyone 🌙🌙🌙 Sweet dreams 😴
+          <div class="wa-time">10:45 PM ✓✓</div>
+        </div>
+      </div>
+
+      <div class="wa-msg">
+        <div class="wa-bubble">
+          <div class="wa-sender">Rekha Mane</div>
+          Anyone?? Road?? Hello??
+          <div class="wa-time">11:02 PM ✓</div>
+        </div>
+      </div>
+
+      <div class="wa-buried">⬆ The eye camp notice is now buried 47 messages above. Camp day: tomorrow.</div>
+    </div>
+
+    <!-- Illustration 2: The buried notice visual -->
+    <div class="illus-wrap">
+      <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+        <rect width="760" height="200" fill="#F4F2EC"/>
+        <!-- Left side: notice trying to surface -->
+        <rect x="40" y="20" width="200" height="160" rx="8" fill="#E1F5EE" opacity=".6" stroke="#9FE1CB" stroke-width="1"/>
+        <rect x="52" y="32" width="176" height="48" rx="6" fill="#0F6E56" opacity=".9"/>
+        <text x="140" y="51" text-anchor="middle" font-size="9" fill="#fff" font-family="sans-serif" font-weight="600">📢 FREE EYE CAMP</text>
+        <text x="140" y="64" text-anchor="middle" font-size="8" fill="#9FE1CB" font-family="sans-serif">12 March · 10AM · Panchayat Hall</text>
+        <text x="140" y="115" text-anchor="middle" font-size="28" fill="#0F6E56" opacity=".15" font-family="sans-serif">✓</text>
+        <text x="140" y="160" text-anchor="middle" font-size="9" font-style="italic" fill="#0F6E56" font-family="sans-serif">Official Notice</text>
+        <!-- Arrow trying to go up -->
+        <text x="140" y="88" text-anchor="middle" font-size="11" fill="#0F6E56" opacity=".4" font-family="sans-serif">↑ trying to surface ↑</text>
+
+        <!-- Middle: chaos pile -->
+        <rect x="280" y="10" width="200" height="180" rx="8" fill="#fff" opacity=".5" stroke="#D3D1C7" stroke-width=".5"/>
+        <text x="380" y="35" text-anchor="middle" font-size="8" fill="#888780" font-family="sans-serif">Messages burying the notice:</text>
+        <rect x="292" y="42" width="176" height="18" rx="4" fill="#DCF8C6" opacity=".8"/>
+        <text x="302" y="54" font-size="7.5" fill="#3d3d3a" font-family="sans-serif">Good morning 🌺 — Sanjay</text>
+        <rect x="292" y="64" width="176" height="18" rx="4" fill="#fff" opacity=".9"/>
+        <text x="302" y="76" font-size="7.5" fill="#3d3d3a" font-family="sans-serif">Road fix kab hoga? — Rekha</text>
+        <rect x="292" y="86" width="176" height="18" rx="4" fill="#DCF8C6" opacity=".8"/>
+        <text x="302" y="98" font-size="7.5" fill="#3d3d3a" font-family="sans-serif">🎵 Voice message 0:47</text>
+        <rect x="292" y="108" width="176" height="18" rx="4" fill="#fff" opacity=".9"/>
+        <text x="302" y="120" font-size="7.5" fill="#A32D2D" font-family="sans-serif">ONION CRISIS!! Forward!! 😭</text>
+        <rect x="292" y="130" width="176" height="18" rx="4" fill="#DCF8C6" opacity=".8"/>
+        <text x="302" y="142" font-size="7.5" fill="#3d3d3a" font-family="sans-serif">Good night 🌙 — Sanjay</text>
+        <rect x="292" y="152" width="176" height="18" rx="4" fill="#fff" opacity=".9"/>
+        <text x="302" y="164" font-size="7.5" fill="#3d3d3a" font-family="sans-serif">Anyone?? Road?? — Rekha</text>
+
+        <!-- Arrow right -->
+        <path d="M498 100 L520 100" fill="none" stroke="#E24B4A" stroke-width="2" marker-end="url(#ar)"/>
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#E24B4A" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
+
+        <!-- Right: outcome -->
+        <rect x="528" y="20" width="200" height="160" rx="8" fill="#FCEBEB" opacity=".7" stroke="#F09595" stroke-width="1"/>
+        <text x="628" y="75" text-anchor="middle" font-size="40" fill="#E24B4A" opacity=".3" font-family="sans-serif">✗</text>
+        <text x="628" y="105" text-anchor="middle" font-size="10" fill="#A32D2D" font-family="sans-serif" font-weight="600">Eye Camp Happened</text>
+        <text x="628" y="120" text-anchor="middle" font-size="10" fill="#A32D2D" font-family="sans-serif" font-weight="600">Nobody Came</text>
+        <text x="628" y="145" text-anchor="middle" font-size="8" fill="#E24B4A" font-style="italic" font-family="sans-serif">Not because they didn't care.</text>
+        <text x="628" y="157" text-anchor="middle" font-size="8" fill="#E24B4A" font-style="italic" font-family="sans-serif">Because they never saw it.</text>
+      </svg>
+      <div class="illus-caption">The notice existed. The camp happened. The connection between them — broken by 47 unrelated messages.</div>
+    </div>
+
+    <p><b>The camp happened. Nobody came.</b> Not because people didn't care about their eyesight. Not because the Gram Sevak didn't do his job. Because a notice got buried under Good Morning images, road complaints, forwarded videos, and voice notes nobody listened to.</p>
+    <p>That Tuesday was the day I stopped thinking WhatsApp was good enough.</p>
+  </div>
+
+  <!-- SECTION 3: PROBLEMS -->
+  <div class="section">
+    <div class="section-label">Chapter 03 — The real diagnosis</div>
+    <h2>Five Ways WhatsApp Fails Governance</h2>
+    <p>WhatsApp was built for friends. It does that beautifully. But governance has different needs — and using the wrong tool doesn't just cause inconvenience, it causes people to <i>not show up to their free eye checkup.</i></p>
+
+    <div class="problem-list">
+      <div class="problem-item">
+        <div class="problem-num">01</div>
+        <div>
+          <div class="problem-title">There is no "official" in a WhatsApp group</div>
+          <div class="problem-body">When the Gram Sevak sends a notice and your neighbor sends a meme, they look <em>exactly the same</em> in the chat. One is policy. One is noise. WhatsApp cannot distinguish them. Neither can the citizen scrolling at midnight with tired eyes.</div>
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">02</div>
+        <div>
+          <div class="problem-title">Complaints disappear into a blue tick void</div>
+          <div class="problem-body">Someone types "the pipe near the school is broken" at 11 PM. The admin sees it. Says <em>"noted 👍"</em>. Three weeks later — silence. The citizen doesn't know if it was logged. The official doesn't know who reported it. <b>"Noted 👍" is not a tracking system.</b></div>
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">03</div>
+        <div>
+          <div class="problem-title">256 members and that's where it ends</div>
+          <div class="problem-body">What happens when a village has 800 households? You create a second group. Then a third. Now the same notice must be sent to three places manually. Miss one group? Half the village misses the information. Every broadcast becomes a logistical exercise.</div>
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">04</div>
+        <div>
+          <div class="problem-title">No institutional memory whatsoever</div>
+          <div class="problem-body">Scroll far enough and you find nothing useful. <em>"What was the date of the last Gram Sabha?"</em> Good luck finding it between 847 Good Morning images and 200 forwarded videos about vegetable prices. WhatsApp is not an archive. It never was.</div>
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">05</div>
+        <div>
+          <div class="problem-title">Zero accountability. Always.</div>
+          <div class="problem-body">A complaint "reported" on WhatsApp has no status. No assigned owner. No timeline. No escalation path. It's a message floating in a sea of 10,000 messages, hoping someone responsible will notice it before it scrolls into oblivion. <em>Most do not.</em></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BIG QUESTION -->
+  <div class="big-q">
+    <p>"What if the Panchayat had a platform built <em>for it</em> —<br>not borrowed from a chat app that was built for friends?"</p>
+  </div>
+
+  <!-- SECTION 4: THE SOLUTION -->
+  <div class="section">
+    <div class="section-label">Chapter 04 — The answer</div>
+    <h2>Introducing Gramvartha</h2>
+
+    <!-- Illustration 3: Platform overview -->
+    <div class="illus-wrap">
+      <svg viewBox="0 0 760 270" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="ga" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <rect width="760" height="270" fill="#E1F5EE" opacity=".4"/>
+
+        <!-- QR panel -->
+        <rect x="30" y="20" width="170" height="230" rx="10" fill="#fff" opacity=".95" stroke="#9FE1CB" stroke-width="1"/>
+        <rect x="30" y="20" width="170" height="36" rx="10" fill="#085041"/>
+        <rect x="30" y="44" width="170" height="12" fill="#085041"/>
+        <text x="115" y="38" text-anchor="middle" font-size="8" fill="#9FE1CB" font-family="sans-serif" font-weight="600">GRAM PANCHAYAT · QR</text>
+        <!-- QR code graphic -->
+        <rect x="60" y="68" width="110" height="110" rx="6" fill="#F4F2EC"/>
+        <!-- QR pattern -->
+        <rect x="66" y="74" width="28" height="28" rx="2" fill="#085041" opacity=".85"/>
+        <rect x="70" y="78" width="20" height="20" rx="1" fill="#fff"/>
+        <rect x="74" y="82" width="12" height="12" rx="1" fill="#085041" opacity=".85"/>
+        <rect x="112" y="74" width="28" height="28" rx="2" fill="#085041" opacity=".85"/>
+        <rect x="116" y="78" width="20" height="20" rx="1" fill="#fff"/>
+        <rect x="120" y="82" width="12" height="12" rx="1" fill="#085041" opacity=".85"/>
+        <rect x="66" y="118" width="28" height="28" rx="2" fill="#085041" opacity=".85"/>
+        <rect x="70" y="122" width="20" height="20" rx="1" fill="#fff"/>
+        <rect x="74" y="126" width="12" height="12" rx="1" fill="#085041" opacity=".85"/>
+        <!-- random dots -->
+        <rect x="100" y="76" width="6" height="6" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="108" y="76" width="4" height="6" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="100" y="86" width="9" height="5" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="100" y="94" width="6" height="6" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="108" y="92" width="8" height="5" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="100" y="104" width="5" height="8" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="108" y="104" width="7" height="5" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="108" y="112" width="5" height="5" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="118" y="102" width="6" height="7" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="128" y="98" width="7" height="6" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="118" y="112" width="9" height="6" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="66" y="104" width="7" height="6" rx="1" fill="#085041" opacity=".7"/>
+        <rect x="76" y="102" width="9" height="5" rx="1" fill="#085041" opacity=".7"/>
+        <text x="115" y="196" text-anchor="middle" font-size="7.5" fill="#0F6E56" font-family="sans-serif" font-weight="600">SCAN FOR NOTICES</text>
+        <text x="115" y="210" text-anchor="middle" font-size="6.5" fill="#888780" font-family="sans-serif">No login · No app needed</text>
+        <text x="115" y="238" text-anchor="middle" font-size="7" fill="#085041" font-family="sans-serif" font-style="italic">Each village gets its own QR</text>
+
+        <!-- Arrow QR to phone -->
+        <path d="M202 135 Q240 110 278 135" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#ga)"/>
+
+        <!-- Phone / App -->
+        <rect x="280" y="18" width="160" height="234" rx="18" fill="#1a1a18"/>
+        <rect x="290" y="30" width="140" height="210" rx="12" fill="#fff"/>
+        <!-- App header -->
+        <rect x="290" y="30" width="140" height="36" rx="12" fill="#085041"/>
+        <rect x="290" y="52" width="140" height="14" fill="#085041"/>
+        <text x="360" y="44" text-anchor="middle" font-size="9" fill="#fff" font-family="sans-serif" font-weight="700">ग्रामवार्ता</text>
+        <text x="360" y="57" text-anchor="middle" font-size="6.5" fill="#9FE1CB" font-family="sans-serif">Rethare Village · Live</text>
+        <!-- Notice cards -->
+        <rect x="296" y="72" width="128" height="28" rx="5" fill="#E1F5EE" opacity=".95"/>
+        <rect x="296" y="72" width="4" height="28" rx="2" fill="#0F6E56"/>
+        <text x="306" y="83" font-size="7.5" fill="#085041" font-family="sans-serif" font-weight="600">📢 Eye Checkup Camp</text>
+        <text x="306" y="93" font-size="6.5" fill="#0F6E56" font-family="sans-serif">Mar 12 · 10AM · Hall ✓ Approved</text>
+        <rect x="296" y="104" width="128" height="28" rx="5" fill="#FAEEDA" opacity=".95"/>
+        <rect x="296" y="104" width="4" height="28" rx="2" fill="#BA7517"/>
+        <text x="306" y="115" font-size="7.5" fill="#633806" font-family="sans-serif" font-weight="600">🛣 Road Repair Update</text>
+        <text x="306" y="125" font-size="6.5" fill="#854F0B" font-family="sans-serif">Work starts Monday · Ward 3</text>
+        <rect x="296" y="136" width="128" height="28" rx="5" fill="#E6F1FB" opacity=".95"/>
+        <rect x="296" y="136" width="4" height="28" rx="2" fill="#185FA5"/>
+        <text x="306" y="147" font-size="7.5" fill="#0C447C" font-family="sans-serif" font-weight="600">💧 Water Supply Notice</text>
+        <text x="306" y="157" font-size="6.5" fill="#185FA5" font-family="sans-serif">Disruption 8–11AM tomorrow</text>
+        <!-- Complaint tracker in app -->
+        <rect x="296" y="170" width="128" height="56" rx="5" fill="#F4F2EC" opacity=".9"/>
+        <text x="360" y="183" text-anchor="middle" font-size="7" fill="#444441" font-family="sans-serif" font-weight="600">Complaint Tracker</text>
+        <circle cx="308" cy="196" r="6" fill="#E24B4A" opacity=".9"/>
+        <text x="308" y="199" text-anchor="middle" font-size="7" fill="#fff" font-family="sans-serif">!</text>
+        <text x="320" y="196" font-size="6.5" fill="#888780" font-family="sans-serif">Pending</text>
+        <rect x="307" y="202" width="1.5" height="8" fill="#D3D1C7"/>
+        <circle cx="308" cy="214" r="6" fill="#EF9F27" opacity=".9"/>
+        <text x="308" y="217" text-anchor="middle" font-size="6" fill="#fff" font-family="sans-serif">▶</text>
+        <text x="320" y="214" font-size="6.5" fill="#888780" font-family="sans-serif">In Progress</text>
+        <rect x="307" y="220" width="1.5" height="8" fill="#D3D1C7"/>
+        <circle cx="308" cy="232" r="6" fill="#1D9E75" opacity=".8"/>
+        <text x="308" y="235" text-anchor="middle" font-size="7" fill="#fff" font-family="sans-serif">✓</text>
+        <text x="320" y="232" font-size="6.5" fill="#888780" font-family="sans-serif">Resolved</text>
+
+        <!-- Arrows to right panels -->
+        <path d="M452 90 L480 90" fill="none" stroke="#1D9E75" stroke-width="1.2" stroke-dasharray="4 2" marker-end="url(#ga)"/>
+        <path d="M452 145 L480 145" fill="none" stroke="#EF9F27" stroke-width="1.2" stroke-dasharray="4 2" marker-end="url(#ga)"/>
+        <path d="M452 200 L480 200" fill="none" stroke="#E24B4A" stroke-width="1.2" stroke-dasharray="4 2" marker-end="url(#ga)"/>
+
+        <!-- Right info panels -->
+        <rect x="482" y="62" width="248" height="52" rx="8" fill="#E1F5EE" opacity=".9" stroke="#9FE1CB" stroke-width=".5"/>
+        <text x="494" y="78" font-size="8" fill="#085041" font-family="sans-serif" font-weight="600">Officials Submit → Admin Approves → Citizens See</text>
+        <text x="494" y="90" font-size="7" fill="#0F6E56" font-family="sans-serif">Structured workflow. No burial. Every notice visible.</text>
+        <text x="494" y="103" font-size="7" fill="#1D9E75" font-family="sans-serif">Even without login — via QR code.</text>
+
+        <rect x="482" y="120" width="248" height="52" rx="8" fill="#FAEEDA" opacity=".9" stroke="#FAC775" stroke-width=".5"/>
+        <text x="494" y="136" font-size="8" fill="#633806" font-family="sans-serif" font-weight="600">Officials Directory — Smart Contact</text>
+        <text x="494" y="148" font-size="7" fill="#854F0B" font-family="sans-serif">Citizens find the right official instantly.</text>
+        <text x="494" y="160" font-size="7" fill="#BA7517" font-family="sans-serif">Name · Designation · Timings · Responsibilities</text>
+
+        <rect x="482" y="178" width="248" height="66" rx="8" fill="#FCEBEB" opacity=".85" stroke="#F7C1C1" stroke-width=".5"/>
+        <text x="494" y="194" font-size="8" fill="#4A1B0C" font-family="sans-serif" font-weight="600">Complaint Tracking — Full Accountability</text>
+        <text x="494" y="206" font-size="7" fill="#A32D2D" font-family="sans-serif">Photo + location + status trail.</text>
+        <text x="494" y="218" font-size="7" fill="#993C1D" font-family="sans-serif">Pending → In Progress → Resolved</text>
+        <text x="494" y="232" font-size="7" fill="#BA7517" font-family="sans-serif">"Noted 👍" is replaced by actual tracking.</text>
+      </svg>
+      <div class="illus-caption">Gramvartha — QR access, structured notices, complaint tracking, and officials directory in one platform</div>
+    </div>
+
+    <p>Gramvartha is a <b>full-stack mobile-first web app</b> that gives every Gram Panchayat the digital infrastructure it actually needs. Not a chat app. Not a workaround. A purpose-built governance platform.</p>
+
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-who">For Citizens</div>
+        <div class="feat-title">📱 Scan QR → Instant Access</div>
+        <div class="feat-body">A QR code on the Panchayat wall. Scan it. See every active notice instantly. No app download. No registration. No friction. Just information.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-who">For Citizens</div>
+        <div class="feat-title">🛠 Report & Track Complaints</div>
+        <div class="feat-body">File an issue with a photo and your location. Get notified when status changes. Watch it go from Pending → In Progress → Resolved. Real accountability.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-who">For Officials</div>
+        <div class="feat-title">📋 Structured Notice System</div>
+        <div class="feat-body">Draft a notice. Admin reviews and approves. It goes live to all citizens. No group chats. No burial. No "send to 3 groups manually."</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-who">For Admins</div>
+        <div class="feat-title">🏢 Village-Level Control</div>
+        <div class="feat-body">Approve notices, manage officials, monitor complaints, view analytics. All in one dashboard. No more managing governance through a chat group at 11 PM.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-who">For Everyone</div>
+        <div class="feat-title">📞 Smart Officials Directory</div>
+        <div class="feat-body">Citizens find the right official by name, designation, or responsibility. Office hours, contact info, what they handle — all in one place.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-who">Super Admin</div>
+        <div class="feat-title">👑 Multi-Village Scalability</div>
+        <div class="feat-body">One Super Admin can manage hundreds of villages, their admins, and monitor platform activity. Built to scale from 1 village to 1,000.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="section">
+    <div class="section-label">Chapter 05 — Under the hood</div>
+    <h2>The Tech Stack</h2>
+    <p>Built lean and mobile-first, optimized for low-bandwidth rural networks.</p>
+    <div class="stack-pills">
+      <span class="pill green">React.js</span>
+      <span class="pill green">Node.js</span>
+      <span class="pill green">Express.js</span>
+      <span class="pill green">MongoDB</span>
+      <span class="pill amber">JWT Auth</span>
+      <span class="pill amber">Cloudinary</span>
+      <span class="pill amber">QR Code Gen</span>
+      <span class="pill blue">PWA / Offline</span>
+      <span class="pill blue">Geolocation API</span>
+      <span class="pill blue">Push Notifications</span>
+    </div>
+
+    <!-- Illustration 4: Architecture -->
+    <div class="illus-wrap">
+      <svg viewBox="0 0 760 180" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#888780" stroke-width="1.5" stroke-linecap="round"/>
+          </marker>
+        </defs>
+        <rect width="760" height="180" fill="#F4F2EC"/>
+        <!-- Frontend -->
+        <rect x="30" y="30" width="170" height="120" rx="8" fill="#E1F5EE" opacity=".9" stroke="#1D9E75" stroke-width=".8"/>
+        <text x="115" y="52" text-anchor="middle" font-size="9" fill="#085041" font-family="sans-serif" font-weight="700">FRONTEND</text>
+        <text x="115" y="68" text-anchor="middle" font-size="8" fill="#0F6E56" font-family="sans-serif">React.js (Mobile-First)</text>
+        <text x="115" y="82" text-anchor="middle" font-size="7.5" fill="#1D9E75" font-family="sans-serif">Tailwind CSS · PWA</text>
+        <text x="115" y="96" text-anchor="middle" font-size="7.5" fill="#1D9E75" font-family="sans-serif">React Router · Axios</text>
+        <text x="115" y="110" text-anchor="middle" font-size="7.5" fill="#1D9E75" font-family="sans-serif">Context API / Redux</text>
+        <text x="115" y="136" text-anchor="middle" font-size="7" fill="#085041" font-family="sans-serif" font-style="italic">4 role-based dashboards</text>
+        <!-- Arrow -->
+        <line x1="202" y1="90" x2="238" y2="90" stroke="#888780" stroke-width="1" stroke-dasharray="4 2" marker-end="url(#ab)" marker-start="url(#ab)"/>
+        <text x="220" y="84" text-anchor="middle" font-size="6" fill="#888780" font-family="sans-serif">REST API</text>
+        <!-- Backend -->
+        <rect x="240" y="30" width="170" height="120" rx="8" fill="#FAEEDA" opacity=".9" stroke="#EF9F27" stroke-width=".8"/>
+        <text x="325" y="52" text-anchor="middle" font-size="9" fill="#412402" font-family="sans-serif" font-weight="700">BACKEND</text>
+        <text x="325" y="68" text-anchor="middle" font-size="8" fill="#633806" font-family="sans-serif">Node.js + Express</text>
+        <text x="325" y="82" text-anchor="middle" font-size="7.5" fill="#854F0B" font-family="sans-serif">MongoDB + Mongoose</text>
+        <text x="325" y="96" text-anchor="middle" font-size="7.5" fill="#854F0B" font-family="sans-serif">JWT Authentication</text>
+        <text x="325" y="110" text-anchor="middle" font-size="7.5" fill="#854F0B" font-family="sans-serif">Role-Based Middleware</text>
+        <text x="325" y="136" text-anchor="middle" font-size="7" fill="#412402" font-family="sans-serif" font-style="italic">RESTful API · bcryptjs</text>
+        <!-- Arrow -->
+        <line x1="412" y1="90" x2="448" y2="90" stroke="#888780" stroke-width="1" stroke-dasharray="4 2" marker-end="url(#ab)" marker-start="url(#ab)"/>
+        <text x="430" y="84" text-anchor="middle" font-size="6" fill="#888780" font-family="sans-serif">SDK/API</text>
+        <!-- External -->
+        <rect x="450" y="30" width="280" height="120" rx="8" fill="#E6F1FB" opacity=".9" stroke="#378ADD" stroke-width=".8"/>
+        <text x="590" y="52" text-anchor="middle" font-size="9" fill="#042C53" font-family="sans-serif" font-weight="700">EXTERNAL SERVICES</text>
+        <rect x="462" y="62" width="118" height="36" rx="5" fill="#fff" opacity=".7"/>
+        <text x="521" y="77" text-anchor="middle" font-size="7.5" fill="#0C447C" font-family="sans-serif" font-weight="600">☁ Cloudinary</text>
+        <text x="521" y="90" text-anchor="middle" font-size="6.5" fill="#185FA5" font-family="sans-serif">Image storage + CDN</text>
+        <rect x="590" y="62" width="128" height="36" rx="5" fill="#fff" opacity=".7"/>
+        <text x="654" y="77" text-anchor="middle" font-size="7.5" fill="#0C447C" font-family="sans-serif" font-weight="600">📍 Geolocation</text>
+        <text x="654" y="90" text-anchor="middle" font-size="6.5" fill="#185FA5" font-family="sans-serif">Duplicate detection</text>
+        <rect x="462" y="106" width="118" height="34" rx="5" fill="#fff" opacity=".7"/>
+        <text x="521" y="121" text-anchor="middle" font-size="7.5" fill="#0C447C" font-family="sans-serif" font-weight="600">📱 QR Generator</text>
+        <text x="521" y="133" text-anchor="middle" font-size="6.5" fill="#185FA5" font-family="sans-serif">Per-village QR codes</text>
+        <rect x="590" y="106" width="128" height="34" rx="5" fill="#fff" opacity=".7"/>
+        <text x="654" y="121" text-anchor="middle" font-size="7.5" fill="#0C447C" font-family="sans-serif" font-weight="600">🔔 Push Notify</text>
+        <text x="654" y="133" text-anchor="middle" font-size="6.5" fill="#185FA5" font-family="sans-serif">Citizen alerts</text>
+      </svg>
+      <div class="illus-caption">MERN stack architecture — optimized for mobile, low-bandwidth, and rural network conditions</div>
+    </div>
+  </div>
+
+  <!-- WHY IT MATTERS -->
+  <div class="section">
+    <div class="section-label">Chapter 06 — The bigger picture</div>
+    <h2>India Has 2.5 Lakh Gram Panchayats</h2>
+    <p>Each one is a small government. Each one is trying to communicate with hundreds or thousands of citizens using a platform capped at 256 members that has no concept of an "official notice."</p>
+    <p>Gramvartha doesn't try to be big. It tries to be <b>right</b> — built for the problem that actually exists, in the places where it actually exists.</p>
+    <p>WhatsApp will always be there. That's fine. Gramvartha isn't competing with it. WhatsApp is for conversations. Let it be for conversations.</p>
+    <p>Gramvartha is the infrastructure WhatsApp was never meant to be:</p>
+    <p>The notice board that never gets rained on. The complaint box that sends you updates. The directory that tells you exactly who to call. The QR code on the Panchayat wall that gives every citizen instant access — even the ones who never joined the group.</p>
+  </div>
+
+  <hr/>
+
+  <!-- FINALE -->
+  <div class="finale">
+    <div class="finale-tagline">"Every village deserves to be heard."</div>
+    <div class="finale-dev">ग्रामवार्ता · Gramvartha</div>
+    <div class="finale-note">Built by someone who watched a free eye-checkup camp happen with zero attendees — because a notice got buried under Good Morning images in a WhatsApp group of 250 people.</div>
+  </div>
+
+</div>
+</body>
+</html>
